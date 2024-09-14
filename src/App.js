@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import AddTaskComponent from "./components/add-task-component.js";
-import TaskComponent from "./components/task-component.js";
+import AddTaskComponent from "./components/add-task-component";
+import TaskComponent from "./components/task-component";
 import {
   fetchTasks,
   addTask as apiAddTask,
   deleteTask as apiDeleteTask,
   changeActiveStatus as apiChangeActiveStatus,
-} from "./services/api-service.js";
+} from "./services/api-service";
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
@@ -25,14 +25,12 @@ const App = () => {
     }
   };
 
-  // Filter Buttons Event Handlers
   const getAllTasks = () => setFilter("all");
   const getActiveTasks = () => setFilter("active");
   const getCompletedTasks = () => setFilter("completed");
 
-  // Task Component Event Handlers
   const addTask = async (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && e.target.value.trim()) {
       try {
         const response = await apiAddTask(e.target.value);
         setTasks([...tasks, response.task]);
@@ -54,11 +52,12 @@ const App = () => {
 
   const changeActiveStatus = async (id, completed) => {
     try {
-      // We pass 'completed' directly, not its negation
-      await apiChangeActiveStatus(id, completed);
+      const response = await apiChangeActiveStatus(id, completed);
       setTasks(
         tasks.map((task) =>
-          task.id === id ? { ...task, completed: !task.completed } : task
+          task.id === id
+            ? { ...task, completed: response.task.completed }
+            : task
         )
       );
     } catch (error) {
@@ -72,26 +71,87 @@ const App = () => {
     return true;
   });
 
+  const styles = {
+    container: {
+      backgroundColor: "#1a1a1a",
+      color: "#f8f9fa",
+      minHeight: "100vh",
+      padding: "2rem",
+      fontFamily: "'Montserrat', sans-serif",
+      letterSpacing: "0.05em",
+    },
+    title: {
+      color: "#ffa500",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "2px",
+      textAlign: "center",
+      marginBottom: "2rem",
+    },
+    completedTaskLabel: {
+      color: "#999999",
+    },
+    taskItem: {
+      fontSize: "1.2rem",
+    },
+    button: {
+      fontFamily: "'Montserrat', sans-serif",
+    },
+  };
+
   return (
-    <div>
-      <AddTaskComponent addTask={addTask}></AddTaskComponent>
-      <div>
-        <button onClick={getAllTasks}>All</button>
-        <button onClick={getActiveTasks}>Active</button>
-        <button onClick={getCompletedTasks}>Completed</button>
+    <div style={styles.container}>
+      <div className="container">
+        <h1 style={styles.title}>To-Do List</h1>
+        <div className="card bg-dark text-light shadow p-4">
+          <AddTaskComponent addTask={addTask} />
+          <div
+            className="btn-group mb-3"
+            role="group"
+            aria-label="Task filters"
+          >
+            <button
+              className={`btn ${
+                filter === "all" ? "btn-warning" : "btn-outline-warning"
+              }`}
+              onClick={getAllTasks}
+              style={styles.button}
+            >
+              All
+            </button>
+            <button
+              className={`btn ${
+                filter === "active" ? "btn-warning" : "btn-outline-warning"
+              }`}
+              onClick={getActiveTasks}
+              style={styles.button}
+            >
+              Active
+            </button>
+            <button
+              className={`btn ${
+                filter === "completed" ? "btn-warning" : "btn-outline-warning"
+              }`}
+              onClick={getCompletedTasks}
+              style={styles.button}
+            >
+              Completed
+            </button>
+          </div>
+          <ul className="list-group list-group-flush">
+            {filteredTasks.map((task) => (
+              <TaskComponent
+                key={task.id}
+                changeActiveStatus={() =>
+                  changeActiveStatus(task.id, !task.completed)
+                }
+                task={task}
+                deleteTask={() => deleteTask(task.id)}
+              />
+            ))}
+          </ul>
+        </div>
       </div>
-      <ul>
-        {filteredTasks.map((task) => (
-          <TaskComponent
-            key={task.id}
-            changeActiveStatus={() =>
-              changeActiveStatus(task.id, task.completed)
-            }
-            task={task}
-            deleteTask={() => deleteTask(task.id)}
-          />
-        ))}
-      </ul>
     </div>
   );
 };
