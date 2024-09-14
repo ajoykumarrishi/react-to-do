@@ -1,9 +1,13 @@
 function TaskComponent({ changeActiveStatus, task, deleteTask }) {
   return (
-    <li key={task.key}>
-      <input type="checkbox" onClick={changeActiveStatus} />
-      <span>{task.description}</span>
-      <button onClick={() => deleteTask(task.key)}>X</button>
+    <li>
+      <input
+        type="checkbox"
+        checked={task.completed}
+        onChange={changeActiveStatus}
+      />
+      <span>{task.content}</span>
+      <button onClick={deleteTask}>X</button>
     </li>
   );
 }
