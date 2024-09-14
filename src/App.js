@@ -77,6 +77,8 @@ const App = () => {
       color: "#f8f9fa",
       minHeight: "100vh",
       padding: "2rem",
+      fontFamily: "'Montserrat', sans-serif",
+      letterSpacing: "0.05em",
     },
     title: {
       color: "#ffa500",
@@ -85,6 +87,15 @@ const App = () => {
       letterSpacing: "2px",
       textAlign: "center",
       marginBottom: "2rem",
+    },
+    completedTaskLabel: {
+      color: "#999999",
+    },
+    taskItem: {
+      fontSize: "1.2rem",
+    },
+    button: {
+      fontFamily: "'Montserrat', sans-serif",
     },
   };
 
@@ -104,6 +115,7 @@ const App = () => {
                 filter === "all" ? "btn-warning" : "btn-outline-warning"
               }`}
               onClick={getAllTasks}
+              style={styles.button}
             >
               All
             </button>
@@ -112,6 +124,7 @@ const App = () => {
                 filter === "active" ? "btn-warning" : "btn-outline-warning"
               }`}
               onClick={getActiveTasks}
+              style={styles.button}
             >
               Active
             </button>
@@ -120,6 +133,7 @@ const App = () => {
                 filter === "completed" ? "btn-warning" : "btn-outline-warning"
               }`}
               onClick={getCompletedTasks}
+              style={styles.button}
             >
               Completed
             </button>

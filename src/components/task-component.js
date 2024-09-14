@@ -38,6 +38,7 @@ const TaskComponent = ({ changeActiveStatus, task, deleteTask }) => {
       <button
         className="btn btn-danger btn-sm"
         onClick={() => deleteTask(task.id)}
+        style={styles.button}
       >
         &times;
       </button>
