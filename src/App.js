@@ -52,7 +52,7 @@ const App = () => {
 
   const changeActiveStatus = async (id, completed) => {
     try {
-      const response = await apiChangeActiveStatus(id, !completed);
+      const response = await apiChangeActiveStatus(id, completed);
       setTasks(
         tasks.map((task) =>
           task.id === id
@@ -129,7 +129,7 @@ const App = () => {
               <TaskComponent
                 key={task.id}
                 changeActiveStatus={() =>
-                  changeActiveStatus(task.id, task.completed)
+                  changeActiveStatus(task.id, !task.completed)
                 }
                 task={task}
                 deleteTask={() => deleteTask(task.id)}
