@@ -1,6 +1,6 @@
 function TaskComponent({ changeActiveStatus, task, deleteTask }) {
   return (
-    <li>
+    <li key={task.id}>
       <input
         type="checkbox"
         checked={task.completed}
