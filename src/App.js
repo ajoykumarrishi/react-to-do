@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import AddTaskComponent from "./components/add-task-component.js";
-import TaskComponent from "./components/task-component.js";
+import AddTaskComponent from "./components/add-task-component";
+import TaskComponent from "./components/task-component";
 import {
   fetchTasks,
   addTask as apiAddTask,
   deleteTask as apiDeleteTask,
   changeActiveStatus as apiChangeActiveStatus,
-} from "./services/api-service.js";
+} from "./services/api-service";
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
@@ -30,7 +30,7 @@ const App = () => {
   const getCompletedTasks = () => setFilter("completed");
 
   const addTask = async (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && e.target.value.trim()) {
       try {
         const response = await apiAddTask(e.target.value);
         setTasks([...tasks, response.task]);
@@ -52,10 +52,12 @@ const App = () => {
 
   const changeActiveStatus = async (id, completed) => {
     try {
-      await apiChangeActiveStatus(id, completed);
+      const response = await apiChangeActiveStatus(id, !completed);
       setTasks(
         tasks.map((task) =>
-          task.id === id ? { ...task, completed: !task.completed } : task
+          task.id === id
+            ? { ...task, completed: response.task.completed }
+            : task
         )
       );
     } catch (error) {
@@ -69,58 +71,71 @@ const App = () => {
     return true;
   });
 
+  const styles = {
+    container: {
+      backgroundColor: "#1a1a1a",
+      color: "#f8f9fa",
+      minHeight: "100vh",
+      padding: "2rem",
+    },
+    title: {
+      color: "#ffa500",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "2px",
+      textAlign: "center",
+      marginBottom: "2rem",
+    },
+  };
+
   return (
-    <div className="container py-5">
-      <h1 className="text-center mb-4 display-4 text-primary">
-        My Playful To-Do List
-      </h1>
-      <div className="row justify-content-center">
-        <div className="col-md-8">
-          <div className="card shadow-lg border-0 rounded-lg">
-            <div className="card-body">
-              <AddTaskComponent addTask={addTask} />
-              <div className="btn-group w-100 mb-4" role="group">
-                <button
-                  className={`btn ${
-                    filter === "all" ? "btn-primary" : "btn-outline-primary"
-                  }`}
-                  onClick={getAllTasks}
-                >
-                  All
-                </button>
-                <button
-                  className={`btn ${
-                    filter === "active" ? "btn-primary" : "btn-outline-primary"
-                  }`}
-                  onClick={getActiveTasks}
-                >
-                  Active
-                </button>
-                <button
-                  className={`btn ${
-                    filter === "completed"
-                      ? "btn-primary"
-                      : "btn-outline-primary"
-                  }`}
-                  onClick={getCompletedTasks}
-                >
-                  Completed
-                </button>
-              </div>
-              <ul className="list-group">
-                {filteredTasks.map((task) => (
-                  <TaskComponent
-                    key={task.id}
-                    changeActiveStatus={() =>
-                      changeActiveStatus(task.id, task.completed)
-                    }
-                    task={task}
-                    deleteTask={() => deleteTask(task.id)}
-                  />
-                ))}
-              </ul>
-            </div>
+    <div style={styles.container}>
+      <div className="container">
+        <h1 style={styles.title}>To-Do List</h1>
+        <div className="card bg-dark text-light shadow p-4">
+          <AddTaskComponent addTask={addTask} />
+          <div
+            className="btn-group mb-3"
+            role="group"
+            aria-label="Task filters"
+          >
+            <button
+              className={`btn ${
+                filter === "all" ? "btn-warning" : "btn-outline-warning"
+              }`}
+              onClick={getAllTasks}
+            >
+              All
+            </button>
+            <button
+              className={`btn ${
+                filter === "active" ? "btn-warning" : "btn-outline-warning"
+              }`}
+              onClick={getActiveTasks}
+            >
+              Active
+            </button>
+            <button
+              className={`btn ${
+                filter === "completed" ? "btn-warning" : "btn-outline-warning"
+              }`}
+              onClick={getCompletedTasks}
+            >
+              Completed
+            </button>
           </div>
+          <ul className="list-group list-group-flush">
+            {filteredTasks.map((task) => (
+              <TaskComponent
+                key={task.id}
+                changeActiveStatus={() =>
+                  changeActiveStatus(task.id, task.completed)
+                }
+                task={task}
+                deleteTask={() => deleteTask(task.id)}
+              />
+            ))}
+          </ul>
         </div>
       </div>
     </div>

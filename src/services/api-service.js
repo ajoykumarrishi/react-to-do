@@ -46,11 +46,10 @@ export async function deleteTask(id) {
   }
 }
 
-export async function changeActiveStatus(id, active) {
-  const endpoint = active ? "mark_complete" : "mark_active";
+export async function changeActiveStatus(id, completed) {
   try {
     const response = await fetch(
-      `${BASE_URL}${id}/${endpoint}?api_key=${API_KEY}`,
+      `${BASE_URL}${id}/toggle_complete?api_key=${API_KEY}`,
       {
         method: "PUT",
       }

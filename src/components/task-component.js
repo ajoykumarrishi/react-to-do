@@ -1,6 +1,8 @@
-function TaskComponent({ changeActiveStatus, task, deleteTask }) {
+import React from "react";
+
+const TaskComponent = ({ changeActiveStatus, task, deleteTask }) => {
   return (
-    <li className="list-group-item d-flex justify-content-between align-items-center">
+    <li className="list-group-item d-flex justify-content-between align-items-center bg-dark text-light">
       <div className="form-check">
         <input
           className="form-check-input"
@@ -19,10 +21,10 @@ function TaskComponent({ changeActiveStatus, task, deleteTask }) {
         </label>
       </div>
       <button className="btn btn-danger btn-sm" onClick={deleteTask}>
-        <i className="bi bi-trash"></i>
+        &times;
       </button>
     </li>
   );
-}
+};
 
 export default TaskComponent;
