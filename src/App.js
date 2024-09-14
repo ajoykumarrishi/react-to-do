@@ -25,12 +25,10 @@ const App = () => {
     }
   };
 
-  // Filter Buttons Event Handlers
   const getAllTasks = () => setFilter("all");
   const getActiveTasks = () => setFilter("active");
   const getCompletedTasks = () => setFilter("completed");
 
-  // Task Component Event Handlers
   const addTask = async (e) => {
     if (e.key === "Enter") {
       try {
@@ -54,7 +52,6 @@ const App = () => {
 
   const changeActiveStatus = async (id, completed) => {
     try {
-      // We pass 'completed' directly, not its negation
       await apiChangeActiveStatus(id, completed);
       setTasks(
         tasks.map((task) =>
@@ -73,25 +70,59 @@ const App = () => {
   });
 
   return (
-    <div>
-      <AddTaskComponent addTask={addTask}></AddTaskComponent>
-      <div>
-        <button onClick={getAllTasks}>All</button>
-        <button onClick={getActiveTasks}>Active</button>
-        <button onClick={getCompletedTasks}>Completed</button>
+    <div className="container py-5">
+      <h1 className="text-center mb-4 display-4 text-primary">
+        My Playful To-Do List
+      </h1>
+      <div className="row justify-content-center">
+        <div className="col-md-8">
+          <div className="card shadow-lg border-0 rounded-lg">
+            <div className="card-body">
+              <AddTaskComponent addTask={addTask} />
+              <div className="btn-group w-100 mb-4" role="group">
+                <button
+                  className={`btn ${
+                    filter === "all" ? "btn-primary" : "btn-outline-primary"
+                  }`}
+                  onClick={getAllTasks}
+                >
+                  All
+                </button>
+                <button
+                  className={`btn ${
+                    filter === "active" ? "btn-primary" : "btn-outline-primary"
+                  }`}
+                  onClick={getActiveTasks}
+                >
+                  Active
+                </button>
+                <button
+                  className={`btn ${
+                    filter === "completed"
+                      ? "btn-primary"
+                      : "btn-outline-primary"
+                  }`}
+                  onClick={getCompletedTasks}
+                >
+                  Completed
+                </button>
+              </div>
+              <ul className="list-group">
+                {filteredTasks.map((task) => (
+                  <TaskComponent
+                    key={task.id}
+                    changeActiveStatus={() =>
+                      changeActiveStatus(task.id, task.completed)
+                    }
+                    task={task}
+                    deleteTask={() => deleteTask(task.id)}
+                  />
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
-      <ul>
-        {filteredTasks.map((task) => (
-          <TaskComponent
-            key={task.id}
-            changeActiveStatus={() =>
-              changeActiveStatus(task.id, task.completed)
-            }
-            task={task}
-            deleteTask={() => deleteTask(task.id)}
-          />
-        ))}
-      </ul>
     </div>
   );
 };
